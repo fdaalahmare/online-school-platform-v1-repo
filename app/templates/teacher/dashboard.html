@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Панель преподавателя</h2>
+    </div>
+
+    <div class="row">
+        <!-- Карточка: Студенты -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 shadow-sm border-0 text-center p-4">
+                <div class="card-body">
+                    <h1 class="display-4 fw-bold text-primary">{{ students_count }}</h1>
+                    <h5 class="card-title text-muted">Мои студенты</h5>
+                    <p class="small mb-4">Количество зачисленных студентов на ваши курсы.</p>
+                    <a href="{{ url_for('teacher.students') }}" class="btn btn-outline-primary w-100">Посмотреть список</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка: ДЗ на проверке -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 shadow-sm border-0 text-center p-4">
+                <div class="card-body">
+                    <h1 class="display-4 fw-bold {% if pending_hw_count > 0 %}text-warning{% else %}text-success{% endif %}">
+                        {{ pending_hw_count }}
+                    </h1>
+                    <h5 class="card-title text-muted">Ожидают проверки</h5>
+                    <p class="small mb-4">Домашние задания студентов, требующие вашего внимания.</p>
+                    <a href="{{ url_for('teacher.homeworks') }}" class="btn {% if pending_hw_count > 0 %}btn-warning text-dark{% else %}btn-outline-success{% endif %} w-100 fw-bold">
+                        Перейти к проверке
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

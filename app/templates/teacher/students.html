@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4 mb-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('teacher.dashboard') }}">Панель</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Мои студенты</li>
+        </ol>
+    </nav>
+
+    <h2 class="mb-4">Список студентов</h2>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Студент</th>
+                            <th>Email</th>
+                            <th>Курс</th>
+                            <th>Дата зачисления</th>
+                            <th class="text-center">Баллы</th>
+                            <th class="text-center">Прогресс</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if students %}
+                        {% for s in students %}
+                        <tr>
+                            <td class="fw-medium">{{ s.full_name }}</td>
+                            <td class="text-muted small">{{ s.email }}</td>
+                            <td><span class="badge bg-secondary">{{ s.course_title }}</span></td>
+                            <td>{{ s.enrolled_date }}</td>
+                            <td class="text-center fw-bold text-success">{{ s.total_score }}</td>
+                            <td class="text-center">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <span class="me-2 small">{{ s.completed_pct }}%</span>
+                                    <div class="progress w-50" style="height: 6px;">
+                                        <div class="progress-bar bg-info" style="width: {{ s.completed_pct }}%;"></div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center p-4 text-muted">У вас пока нет зачисленных студентов.
+                            </td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

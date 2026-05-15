@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4 mb-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('teacher.dashboard') }}">Панель</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Проверка ДЗ</li>
+        </ol>
+    </nav>
+
+    <h2 class="mb-4">Очередь на проверку</h2>
+
+    {% if homeworks %}
+    {% for hw in homeworks %}
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+            <div>
+                <h5 class="mb-0 fw-bold">{{ hw.homework_title }}</h5>
+                <small class="text-muted">Сдал(а): <strong>{{ hw.student_name }}</strong> • {{ hw.submitted_date
+                    }}</small>
+            </div>
+            <span class="badge bg-primary fs-6">{{ hw.course_title }}</span>
+        </div>
+
+        <div class="card-body">
+            <h6 class="text-uppercase text-muted small fw-bold mb-2">Ответ ученика:</h6>
+
+            <div class="bg-light p-3 rounded mb-3 border">
+                {% if hw.answer_text %}
+                <p class="mb-0" style="white-space: pre-wrap;">{{ hw.answer_text }}</p>
+                {% endif %}
+                {% if hw.answer_text and hw.answer_url %}
+                <hr>{% endif %}
+                {% if hw.answer_url %}
+                <a href="{{ hw.answer_url }}" target="_blank" class="text-decoration-none fw-bold">🔗 Прикрепленная
+                    ссылка (Открыть)</a>
+                {% endif %}
+            </div>
+
+            <!-- Форма проверки (вызывает pr_check_homework) -->
+            <form method="POST" action="{{ url_for('teacher.homeworks') }}" class="mt-4 border-top pt-3">
+                <input type="hidden" name="submission_id" value="{{ hw.submission_id }}">
+
+                <h6 class="text-uppercase text-muted small fw-bold mb-3">Оценка работы:</h6>
+                <div class="row align-items-start">
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label fw-bold">Балл (0 - {{ hw.max_score }})</label>
+                        <input type="number" name="score" class="form-control form-control-lg text-center" min="0"
+                            max="{{ hw.max_score }}" required placeholder="0">
+                    </div>
+                    <div class="col-md-9 mb-3">
+                        <label class="form-label fw-bold">Комментарий</label>
+                        <textarea name="comment" class="form-control" rows="2"
+                            placeholder="Напишите обратную связь ученику..." required></textarea>
+                    </div>
+                </div>
+                <div class="text-end">
+                    <button type="submit" class="btn btn-success px-4 fw-bold">Сохранить оценку и завершить</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="alert alert-success text-center p-5 shadow-sm border-0">
+        <h4 class="alert-heading">Отличная работа! 🎉</h4>
+        <p class="mb-0">Все домашние задания проверены. Вы можете выпить кофе!</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
