@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Онлайн-Школа</title>
+
+    <!-- Подключаем Bootstrap 5 (каркас) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Встроенные стили для 100% работы без кэширования -->
+    <style>
+        /* Базовые настройки */
+        body {
+            background-color: #f8f9fa;
+            /* Очень светлый серый фон */
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            color: #333;
+        }
+
+        /* Карточки курсов и уроков */
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        /* Эффект наведения на карточку курса */
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Прогресс-бары */
+        .progress {
+            background-color: #e9ecef;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            border-radius: 6px;
+            transition: width 1s ease-in-out;
+        }
+
+        /* Значки (бейджи) */
+        .badge {
+            padding: 0.5em 0.75em;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .bg-primary {
+            background-color: #0d6efd !important;
+        }
+
+        /* Аккордеон (модули курса) */
+        .accordion-item {
+            border: 1px solid #e9ecef;
+            border-radius: 12px !important;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .accordion-button {
+            font-weight: 600;
+            color: #2b2d42;
+            background-color: #fff;
+        }
+
+        .accordion-button:not(.collapsed) {
+            color: #0d6efd;
+            background-color: #f8f9fa;
+            box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .125);
+        }
+
+        .accordion-button:focus {
+            box-shadow: none;
+            border-color: rgba(0, 0, 0, .125);
+        }
+
+        /* Список уроков внутри модуля */
+        .list-group-item {
+            border-left: none;
+            border-right: none;
+            padding: 1rem 1.25rem;
+            transition: background-color 0.15s ease;
+        }
+
+        .list-group-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .list-group-item:first-child {
+            border-top: none;
+        }
+
+        .list-group-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Кнопки */
+        .btn {
+            border-radius: 8px;
+            font-weight: 500;
+            padding: 0.5rem 1.25rem;
+        }
+
+        /* Хлебные крошки (навигация) */
+        .breadcrumb {
+            background-color: transparent;
+            padding: 0;
+            margin-bottom: 1.5rem;
+        }
+
+        .breadcrumb-item a {
+            color: #6c757d;
+            text-decoration: none;
+        }
+
+        .breadcrumb-item a:hover {
+            color: #0d6efd;
+            text-decoration: underline;
+        }
+
+        /* Плеер видео */
+        .ratio-16x9 {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Верхняя навигационная панель (Navbar) -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">🎓 Наша Школа</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <!-- Проверяем, авторизован ли пользователь -->
+                    {% if current_user.is_authenticated %}
+                    <li class="nav-item d-flex align-items-center">
+                        <span class="nav-link text-light me-3 mb-0">
+                            👤 {{ current_user.first_name }} ({{ current_user.role }})
+                        </span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-outline-light btn-sm px-3"
+                            href="{{ url_for('auth.logout') }}">Выйти</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('auth.login') }}">Войти</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Вывод системных сообщений (flash messages) -->
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Основной контент (сюда будут вставляться другие страницы) -->
+    {% block content %}{% endblock %}
+
+    <!-- Подключаем скрипты Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

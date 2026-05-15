@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Мое обучение</h2>
+        <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-danger btn-sm">Выйти</a>
+    </div>
+
+    <div class="row">
+        {% if courses %}
+        {% for course in courses %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body">
+                    <span class="badge bg-primary mb-2">{{ course.subject }}</span>
+                    <h5 class="card-title">{{ course.course_title }}</h5>
+                    <p class="text-muted small mb-3">Направление: {{ course.topic_name }}</p>
+
+                    <p class="small mb-1">Пройдено уроков: {{ course.completed_lessons }} из {{ course.total_lessons }}
+                    </p>
+                    <div class="progress mb-3" style="height: 8px;">
+                        <div class="progress-bar bg-success" role="progressbar"
+                            style="width: {{ course.lessons_progress_pct }}%;"></div>
+                    </div>
+
+                    <p class="small mb-1">Сдано ДЗ: {{ course.submitted_homeworks }} из {{ course.total_homeworks }}
+                        (Балл: {{ course.score_pct }}%)</p>
+                    <div class="progress mb-4" style="height: 8px;">
+                        <div class="progress-bar bg-info" role="progressbar" style="width: {{ course.score_pct }}%;">
+                        </div>
+                    </div>
+
+                    <a href="{{ url_for('student.course_view', course_id=course.course_id) }}"
+                        class="btn btn-primary w-100">Перейти к курсу</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="col-12">
+            <div class="alert alert-info text-center p-5">
+                У вас пока нет активных курсов. Ожидайте зачисления администратором.
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

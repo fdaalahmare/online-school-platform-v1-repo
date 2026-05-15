@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4 mb-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('student.dashboard') }}">Мои курсы</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('student.course_view', course_id=lesson.course_id) }}">{{
+                    lesson.course_title }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ lesson.title }}</li>
+        </ol>
+    </nav>
+
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body p-4">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <h2 class="card-title mb-0">{{ lesson.title }}</h2>
+                {% if lesson.lesson_type == 'webinar' %}
+                <span class="badge bg-danger fs-6">Вебинар</span>
+                {% else %}
+                <span class="badge bg-secondary fs-6">Видео</span>
+                {% endif %}
+            </div>
+
+            <p class="text-muted">{{ lesson.description or 'Описание отсутствует.' }}</p>
+
+            <div
+                class="ratio ratio-16x9 bg-dark rounded mb-4 d-flex justify-content-center align-items-center text-white text-center">
+                {% if lesson.lesson_type == 'video' and lesson.video_url %}
+                <p class="mb-0">🎥 Плеер для видео: <br><a href="{{ lesson.video_url }}" target="_blank"
+                        class="text-info">{{ lesson.video_url }}</a></p>
+                {% elif lesson.lesson_type == 'webinar' and lesson.webinar_url %}
+                <p class="mb-0">🔴 Ссылка на вебинар: <br><a href="{{ lesson.webinar_url }}" target="_blank"
+                        class="text-info">{{ lesson.webinar_url }}</a><br><small>Запланировано на: {{
+                        lesson.webinar_scheduled_at }}</small></p>
+                {% else %}
+                <p class="mb-0">Контент недоступен</p>
+                {% endif %}
+            </div>
+
+            <div class="d-flex align-items-center">
+                {% if lesson.is_completed %}
+                <div class="alert alert-success mb-0 w-100 p-2 text-center">
+                    <span class="fw-bold">✅ Урок пройден</span>
+                </div>
+                {% else %}
+                <form method="POST" action="{{ url_for('student.lesson_view', lesson_id=lesson.id) }}" class="w-100">
+                    <input type="hidden" name="action" value="complete_lesson">
+                    <button type="submit" class="btn btn-outline-success w-100 fw-bold">Отметить как пройденный</button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {% if homeworks %}
+    <h4 class="mb-3">Домашнее задание</h4>
+    {% for hw in homeworks %}
+    <div class="card shadow-sm border-0 mb-3">
+        <div class="card-body p-4">
+            <h5>{{ hw.title }} <span class="badge bg-info text-dark ms-2">Макс. балл: {{ hw.max_score }}</span></h5>
+            <p>{{ hw.description }}</p>
+
+            <hr>
+
+            {% if hw.status %}
+            <div class="alert 
+                        {% if hw.status == 'submitted' %}alert-warning
+                        {% elif hw.status == 'checked' %}alert-success
+                        {% elif hw.status == 'auto_checked' %}alert-primary
+                        {% endif %} mb-0">
+
+                <h6 class="alert-heading">Статус:
+                    {% if hw.status == 'submitted' %}Ожидает проверки
+                    {% elif hw.status == 'checked' %}Проверено преподавателем
+                    {% elif hw.status == 'auto_checked' %}Проверено автоматически
+                    {% endif %}
+                </h6>
+
+                {% if hw.score is not none %}
+                <p class="mb-1 fs-5"><strong>Ваш балл: {{ hw.score }} / {{ hw.max_score }}</strong></p>
+                {% endif %}
+
+                <div class="mt-3 opacity-75 small">
+                    <strong>Ваш ответ:</strong><br>
+                    {% if hw.answer_text %}{{ hw.answer_text }}<br>{% endif %}
+                    {% if hw.answer_url %}<a href="{{ hw.answer_url }}" target="_blank">{{ hw.answer_url }}</a>{% endif
+                    %}
+                </div>
+            </div>
+            {% else %}
+            <form method="POST" action="{{ url_for('student.lesson_view', lesson_id=lesson.id) }}">
+                <input type="hidden" name="action" value="submit_hw">
+                <input type="hidden" name="homework_id" value="{{ hw.id }}">
+
+                <div class="mb-3">
+                    <label for="answer_text" class="form-label">Текст ответа</label>
+                    <textarea class="form-control" id="answer_text" name="answer_text" rows="3"
+                        placeholder="Напишите ваш ответ здесь..."></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label for="answer_url" class="form-label">Прикрепить ссылку (Google Docs, Github и т.д.)</label>
+                    <input type="url" class="form-control" id="answer_url" name="answer_url" placeholder="https://...">
+                </div>
+
+                <button type="submit" class="btn btn-primary">Отправить на проверку</button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+</div>
+{% endblock %}
