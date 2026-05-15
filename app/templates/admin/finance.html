@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4 mb-5">
+    <!-- Кнопка возврата и заголовок -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Финансовый отчет</h2>
+        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-primary fw-bold">🔙 Вернуться в сводку</a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Месяц</th>
+                            <th class="text-center">Платящих учеников</th>
+                            <th class="text-center">Кол-во транзакций</th>
+                            <th class="text-end">Сумма выручки</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if finance_data %}
+                        {% for row in finance_data %}
+                        <tr>
+                            <td class="fw-bold">{{ row.month_label }}</td>
+                            <td class="text-center">{{ row.paying_students }}</td>
+                            <td class="text-center">{{ row.payments_count }}</td>
+                            <td class="text-end fw-bold text-success">{{ row.revenue }} ₽</td>
+                        </tr>
+                        {% endfor %}
+                        {% else %}
+                        <tr>
+                            <td colspan="4" class="text-center p-4 text-muted">Платежей пока не поступало.</td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

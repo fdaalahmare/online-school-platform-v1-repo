@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4 mb-5">
+    <!-- Кнопка возврата и заголовок -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Управление пользователями</h2>
+        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-primary fw-bold">🔙 Вернуться в сводку</a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Пользователь</th>
+                            <th>Email</th>
+                            <th>Роль</th>
+                            <th>Регистрация</th>
+                            <th>Статус</th>
+                            <th class="text-end">Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for u in users %}
+                        <tr>
+                            <td class="fw-medium">{{ u.first_name }} {{ u.last_name }}</td>
+                            <td class="text-muted">{{ u.email }}</td>
+                            <td>
+                                {% if u.role == 'admin' %} <span class="badge bg-danger">Admin</span>
+                                {% elif u.role == 'teacher' %} <span class="badge bg-primary">Teacher</span>
+                                {% else %} <span class="badge bg-secondary">Student</span> {% endif %}
+                            </td>
+                            <td class="small">{{ u.created }}</td>
+                            <td>
+                                {% if u.is_active %}
+                                <span class="text-success fw-bold">Активен</span>
+                                {% else %}
+                                <span class="text-danger fw-bold">Деактивирован</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-end">
+                                {% if u.is_active and u.id != current_user.id %}
+                                <form method="POST" action="{{ url_for('admin.users') }}" class="d-inline"
+                                    onsubmit="return confirm('Деактивировать пользователя? Все его зачисления будут отменены.');">
+                                    <input type="hidden" name="action" value="deactivate">
+                                    <input type="hidden" name="user_id" value="{{ u.id }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Отключить</button>
+                                </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

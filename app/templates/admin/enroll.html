@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4 mb-5">
+    <!-- Кнопка возврата и заголовок -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Зачислить на курс</h2>
+        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-primary fw-bold">🔙 Вернуться в сводку</a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+                    <form method="POST" action="{{ url_for('admin.enroll') }}">
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Выберите ученика</label>
+                            <select name="student_id" class="form-select" required>
+                                <option value="" disabled selected>-- Не выбрано --</option>
+                                {% for s in students %}
+                                <option value="{{ s.id }}">{{ s.first_name }} {{ s.last_name }} ({{ s.email }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Выберите курс</label>
+                            <select name="course_id" class="form-select" required>
+                                <option value="" disabled selected>-- Не выбрано --</option>
+                                {% for c in courses %}
+                                <option value="{{ c.id }}">{{ c.title }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 fw-bold">Зачислить студента</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
