@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
-from app.db import get_db
-from app.decorators import role_required
+from src.db import get_db
+from src.decorators import role_required
 
 bp = Blueprint('student', __name__, url_prefix='/student')
 

@@ -1,4 +1,4 @@
-from app import create_app
+from src import create_app
 
 # Создаем экземпляр приложения
 app = create_app()
