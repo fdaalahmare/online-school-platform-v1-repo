@@ -2,7 +2,6 @@
 
 {% block content %}
 <div class="container mt-4 mb-5">
-    <!-- Кнопка возврата и заголовок -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Управление пользователями</h2>
         <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-primary fw-bold">🔙 Вернуться в сводку</a>
@@ -44,6 +43,7 @@
                                 {% if u.is_active and u.id != current_user.id %}
                                 <form method="POST" action="{{ url_for('admin.users') }}" class="d-inline"
                                     onsubmit="return confirm('Деактивировать пользователя? Все его зачисления будут отменены.');">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                                     <input type="hidden" name="action" value="deactivate">
                                     <input type="hidden" name="user_id" value="{{ u.id }}">
                                     <button type="submit" class="btn btn-sm btn-outline-danger">Отключить</button>

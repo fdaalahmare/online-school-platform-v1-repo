@@ -45,6 +45,7 @@
                 </div>
                 {% else %}
                 <form method="POST" action="{{ url_for('student.lesson_view', lesson_id=lesson.id) }}" class="w-100">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                     <input type="hidden" name="action" value="complete_lesson">
                     <button type="submit" class="btn btn-outline-success w-100 fw-bold">Отметить как пройденный</button>
                 </form>
@@ -90,6 +91,7 @@
             </div>
             {% else %}
             <form method="POST" action="{{ url_for('student.lesson_view', lesson_id=lesson.id) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                 <input type="hidden" name="action" value="submit_hw">
                 <input type="hidden" name="homework_id" value="{{ hw.id }}">
 

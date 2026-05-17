@@ -9,6 +9,8 @@
                     <h2 class="text-center mb-4">Вход в систему</h2>
 
                     <form method="POST" action="{{ url_for('auth.login') }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
                         <div class="mb-3">
                             <label for="email" class="form-label">Email</label>
                             <input type="email" class="form-control" id="email" name="email" required
@@ -29,7 +31,7 @@
                     <div class="mt-4 text-center text-muted small">
                         <p>Тестовые доступы:<br>
                             Админ: admin@school.ru / admin123<br>
-                            Ученик: student01@mail.ru / pass123<br>
+                            Ученик: student06@mail.ru / pass123<br>
                             Учитель: ivanova@school.ru / teacher123
                         </p>
                     </div>

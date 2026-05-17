@@ -38,8 +38,8 @@
                 {% endif %}
             </div>
 
-            <!-- Форма проверки (вызывает pr_check_homework) -->
             <form method="POST" action="{{ url_for('teacher.homeworks') }}" class="mt-4 border-top pt-3">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                 <input type="hidden" name="submission_id" value="{{ hw.submission_id }}">
 
                 <h6 class="text-uppercase text-muted small fw-bold mb-3">Оценка работы:</h6>
